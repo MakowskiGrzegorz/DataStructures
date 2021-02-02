@@ -1,26 +1,15 @@
-#include "SkipList.h"
+//#include "SkipList.h"
+#include "DLOrderList.h"
 #include <iostream>
 
 
 int main()
 {
-    auto list = SkipList<int>();
+    auto orderList = DLOrderList<int>();
 
-    int val = 20;
-    list.add(5);
-    list.add(10);
-    list.add(7);
-
-    auto lambda = [&](SkipList<int> list)
-    {
-        Node<int>* tmp;
-        tmp = list.head.get();
-        while(tmp != nullptr)
-        {
-            std::cout << tmp->value <<"\n";
-            tmp = tmp->next.get();
-        }
-    };
+    orderList.add(10);
+    orderList.add(9);
+    orderList.printList();
     
-    //lambda(std::move(list));
+    //std::cout <<orderList.head->val << orderList.head->next->val;
 }
