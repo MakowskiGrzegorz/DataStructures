@@ -85,7 +85,33 @@ void DLOrderList<T>::add(const T& val)
     }
     else// if more elements
     {
+        std::cout << "jestem " << std::endl;
+        auto tmpHead = this->head.get();
+        auto newNode = std::make_unique<DLOrderNode<T>>();
+        newNode->val = val;
+        newNode->prev = tmpHead;
+        auto prevNode = std::unique_ptr<DLOrderNode<T>>(nullptr);
+
+        if(tmpHead->val < val)
+        {
+
+            //make new head
+        }
+        else
+        {
+            prevNode = std::move(tmpHead->next);
+            
+            while(prevNode->val < val && prevNode->next != nullptr)
+            {
+                prevNode = std::move(prevNode->next);
+                newNode->prev = prevNode.get();
+            }
+        }
         
+        //tmp = tmp->release();
+        newNode->next = std::move(prevNode);
+        prevNode->next = std::move(newNode);
+
     }
     
 }
