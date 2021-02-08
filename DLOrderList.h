@@ -85,34 +85,72 @@ void DLOrderList<T>::add(const T& val)
     }
     else// if more elements
     {
-        std::cout << "jestem " << std::endl;
-        auto tmpHead = this->head.get();
         auto newNode = std::make_unique<DLOrderNode<T>>();
         newNode->val = val;
-        newNode->prev = tmpHead;
-        auto prevNode = std::unique_ptr<DLOrderNode<T>>(nullptr);
-
-        if(tmpHead->val < val)
+        auto tmp = this->head.release();
+        if(tmp->next->val > val)
         {
-
-            //make new head
+            newNode->next = std::move(tmp->next);
+            newNode->prev = tmp;
+            newNode->next->prev = newNode.get();
+            tmp->next = std::move(newNode);
+            this->head = std::unique_ptr<DLOrderNode<T>>(tmp);
         }
         else
         {
-            prevNode = std::move(tmpHead->next);
-            
-            while(prevNode->val < val && prevNode->next != nullptr)
+            this->head = std::unique_ptr<DLOrderNode<T>>(tmp);
+            tmp = this->head->next.release();
+            while((tmp->next != nullptr) && (tmp->next->val < val))
             {
-                prevNode = std::move(prevNode->next);
-                newNode->prev = prevNode.get();
+                tmp->prev->next = std::unique_ptr<DLOrderNode<T>>(tmp);
+                tmp = tmp->next.release();
             }
+            if(tmp->next == nullptr)//if tail
+            {
+                newNode->prev = tmp;
+                tmp->next = std::move(newNode);
+                tmp->prev->next = std::unique_ptr<DLOrderNode<T>>(tmp);
+            }
+            else
+            {
+                newNode->prev = tmp;
+                newNode->next = std::move(tmp->next);
+                newNode->next->prev = newNode.get();
+                tmp->next = std::move(newNode);
+                tmp->prev->next = std::unique_ptr<DLOrderNode<T>>(tmp);          
+            }
+            
         }
         
-        //tmp = tmp->release();
-        newNode->next = std::move(prevNode);
-        prevNode->next = std::move(newNode);
-
     }
+    //     std::cout << "jestem " << std::endl;
+    //     auto tmpHead = this->head.get();
+    //     auto newNode = std::make_unique<DLOrderNode<T>>();
+    //     newNode->val = val;
+    //     newNode->prev = tmpHead;
+    //     auto prevNode = std::unique_ptr<DLOrderNode<T>>(nullptr);
+
+    //     if(tmpHead->val < val)
+    //     {
+
+    //         //make new head
+    //     }
+    //     else
+    //     {
+    //         prevNode = std::move(tmpHead->next);
+            
+    //         while(prevNode->val < val && prevNode->next != nullptr)
+    //         {
+    //             prevNode = std::move(prevNode->next);
+    //             newNode->prev = prevNode.get();
+    //         }
+    //     }
+        
+    //     //tmp = tmp->release();
+    //     newNode->next = std::move(prevNode);
+    //     prevNode->next = std::move(newNode);
+
+    // }
     
 }
 
